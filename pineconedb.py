@@ -3,7 +3,7 @@ from chunked_doc import chunking_documents
 from embed import initialize_embeddings
 from dotenv import load_dotenv
 import os
-
+import streamlit as st
 # Load environment variables
 
 # Get Pinecone index name from environment
