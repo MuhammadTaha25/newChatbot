@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY=os.environ['OPENAI_API_KEY']
+OPENAI_API_KEY=os.getenv('OPENAI_API_KEY')
 def initialize_embeddings(openai_api_key=OPENAI_API_KEY):
     """
     Initialize embeddings using OpenAI or HuggingFace based on the availability of the OpenAI API key.
