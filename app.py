@@ -20,7 +20,6 @@ chain=create_expert_chain(LLM,retriever)
 st.title("Ask Anything About Elon Musk")
 
 # Initialize components
-history=[]
 # Chat container to display conversation
 chat_container = st.container()
 if "messages" not in st.session_state:
@@ -40,8 +39,7 @@ if send_button or send_input and query:
         response =chain.invoke({'question': query})
         print(response)
     query="user_question:"+query
-    response="ai_response:"+response
-    history.append((query, response))
+
     # Generate response
     # Update session state with user query and AI response
     st.session_state.messages.append(("user", query))
