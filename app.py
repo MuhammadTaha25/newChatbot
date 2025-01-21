@@ -9,7 +9,7 @@ from llModel import initialize_LLM
 import streamlit as st
 
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
-GOOGLE_API_KEY =st.secrets['GOOGLE_API_KEY']
+GOOGLE_API_KEY =st.secrets['google_api_key']
 
 LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 retriever=manage_pinecone_store()
