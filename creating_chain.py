@@ -9,7 +9,6 @@ def format_docs(docs):
 
 
 LLM=initialize_LLM()
-retriever=manage_pinecone_store()
 
 def create_expert_chain(LLM=LLM, retriever=retriever):
     """
