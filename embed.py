@@ -1,11 +1,8 @@
 from langchain_openai import OpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
-import os
-from dotenv import load_dotenv
+import streamlit as st
 
-load_dotenv()
-
-OPENAI_API_KEY=os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY=st.secrets["OPENAI_API_KEY"]
 def initialize_embeddings(openai_api_key=OPENAI_API_KEY):
     """
     Initialize embeddings using OpenAI or HuggingFace based on the availability of the OpenAI API key.
