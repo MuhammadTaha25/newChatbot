@@ -1,12 +1,10 @@
 import streamlit as st
 from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
-#call the function to create the chain
-from dotenv import load_dotenv
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 # Load environment variables from .env file
-load_dotenv()
+
 
 retriever=manage_pinecone_store()
 
