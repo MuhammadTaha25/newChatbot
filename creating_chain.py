@@ -2,10 +2,7 @@ from llm import initialize_LLM
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from operator import itemgetter
-from pineconedb import manage_pinecone_store
-#formating the retrived data before passing LLM\
-import os
-from dotenv import load_dotenv
+
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
