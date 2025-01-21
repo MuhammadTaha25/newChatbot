@@ -28,8 +28,7 @@ def create_expert_chain(LLM=None, retriever=None):
     query_fetcher = itemgetter("question")  # Extract the question from input
     setup = {
         "question": query_fetcher,          # Fetch the question from input
-        "context": query_fetcher ,
-        | retriever|format_docs  # Combine the question with the retriever
+        "context": query_fetcher ,| retriever|format_docs  # Combine the question with the retriever
     }
     _chain = setup | _prompt | LLM | StrOutputParser()
 
