@@ -7,8 +7,7 @@ import os
 
 load_dotenv()
 
-PINECONE_INDEX=os.environ["PINECONE_INDEX_NAME"]
-OPENAI_API_KEY=os.environ['OPENAI_API_KEY']
+PINECONE_INDEX=os.getenv("PINECONE_INDEX_NAME")
 
 embeddings=initialize_embeddings()
 chunkDoc=chunking_documents()
