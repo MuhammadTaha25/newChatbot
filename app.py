@@ -38,7 +38,6 @@ if send_button or send_input and query:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
         response =chain.invoke({'question': query})
         print(response)
-    query="user_question:"+query
 
     # Generate response
     # Update session state with user query and AI response
