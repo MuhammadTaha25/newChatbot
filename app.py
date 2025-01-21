@@ -65,8 +65,6 @@ retriever=manage_pinecone_store()
 chain=create_expert_chain(LLM,retriever)
 # Build the chain
 # Set the title of the app
-st.title("Ask Anything About Elon Musk")
-
 # Initialize components
 # Chat container to display conversation
 chat_container = st.container()
