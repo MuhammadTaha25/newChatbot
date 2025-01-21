@@ -1,6 +1,6 @@
 import streamlit as st
 from pineconedb import manage_pinecone_store
-from chainCreation import create_expert_chain
+from creating_chain import create_expert_chain
 #call the function to create the chain
 from dotenv import load_dotenv
 def format_docs(docs):
