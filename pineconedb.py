@@ -5,10 +5,9 @@ from dotenv import load_dotenv
 import os
 
 # Load environment variables
-load_dotenv()
 
 # Get Pinecone index name from environment
-PINECONE_INDEX = os.getenv("PINECONE_INDEX_NAME")
+PINECONE_INDEX = st.secrets("PINECONE_INDEX_NAME")
 
 # Initialize embeddings only once
 embeddings = initialize_embeddings()
