@@ -1,4 +1,4 @@
-from llm import initialize_LLM
+from llModel import initialize_LLM
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from operator import itemgetter
