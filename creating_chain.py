@@ -21,17 +21,15 @@ def create_expert_chain(LLM=None, retriever=None):
     Answer all questions as if you are an expert on his life, career, companies, and achievements.
     Context: {context}
     Question: {question}
-    conversation_history: {chat_history}
     """
     _prompt = ChatPromptTemplate.from_template(prompt_str)
 
     # Chain setup
-    history_fetcher=itemgetter("chat_history")
     query_fetcher = itemgetter("question")  # Extract the question from input
     setup = {
         "question": query_fetcher,          # Fetch the question from input
         "context": query_fetcher ,
-        "chat_history":history_fetcher| retriever|format_docs  # Combine the question with the retriever
+        | retriever|format_docs  # Combine the question with the retriever
     }
     _chain = setup | _prompt | LLM | StrOutputParser()
 
