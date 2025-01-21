@@ -1,16 +1,7 @@
 from langchain_google_genai import GoogleGenerativeAI
 from langchain.chat_models import ChatOpenAI
-import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Retrieve API keys from environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-GOOGLE_API_KEY = os.getenv('GEMINI_API_KEY')
-
-def initialize_LLM(openai_api_key=OPENAI_API_KEY, gemini_api_key=GOOGLE_API_KEY):
+def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     """
     Initialize a Language Learning Model (LLM) using OpenAI or Gemini based on the availability of API keys.
 
