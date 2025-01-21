@@ -6,8 +6,12 @@ def format_docs(docs):
 # Load environment variables from .env file
 from pineconedb import manage_pinecone_store
 from llModel import initialize_LLM
+import streamlit as st
 
-LLM=initialize_LLM()
+OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
+GOOGLE_API_KEY =st.secrets['GOOGLE_API_KEY']
+
+LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 retriever=manage_pinecone_store()
 
 chain=create_expert_chain(LLM,retriever)
