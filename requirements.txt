@@ -1,0 +1,17 @@
+langchain-community
+langchain_huggingface
+langchain
+langsmith
+transformers 
+pinecone-client
+langchain_pinecone
+streamlit
+bs4
+langchain-google-genai
+pillow
+python-dotenv 
+pypdf
+librosa
+streamlit-mic-recorder
+langchain-openai
+openai
