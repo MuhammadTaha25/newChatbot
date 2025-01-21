@@ -1,19 +1,20 @@
 import streamlit as st
 from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
-def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
-# Load environment variables from .env file
 from pineconedb import manage_pinecone_store
 from llModel import initialize_LLM
 import streamlit as st
+
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+# Load environment variables from .env file
+
 
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 GOOGLE_API_KEY =st.secrets['google_api_key']
 
 LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 retriever=manage_pinecone_store()
-
 chain=create_expert_chain(LLM,retriever)
 # Build the chain
 # Set the title of the app
