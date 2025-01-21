@@ -1,16 +1,10 @@
-from llModel import initialize_LLM
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from operator import itemgetter
-from pineconedb import manage_pinecone_store
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-
-
-LLM=initialize_LLM()
-retriever=manage_pinecone_store()
-def create_expert_chain(LLM=LLM, retriever=retriever):
+def create_expert_chain(LLM=None, retriever=None):
     """
     Create a chain for answering questions as an expert on Elon Musk.
 
