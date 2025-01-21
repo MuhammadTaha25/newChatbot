@@ -7,7 +7,7 @@ import streamlit as st
 # Load environment variables
 
 # Get Pinecone index name from environment
-PINECONE_INDEX = st.secrets("PINECONE_INDEX_NAME")
+PINECONE_INDEX = st.secrets["PINECONE_INDEX_NAME"]
 
 # Initialize embeddings only once
 embeddings = initialize_embeddings()
