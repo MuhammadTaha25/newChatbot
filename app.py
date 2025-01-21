@@ -8,7 +8,7 @@ from pineconedb import manage_pinecone_store
 from llModel import initialize_LLM
 
 
-=initialize_LLM()
+LLM=initialize_LLM()
 retriever=manage_pinecone_store()
 
 retriever=manage_pinecone_store()
