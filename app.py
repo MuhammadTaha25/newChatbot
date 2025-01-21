@@ -20,6 +20,8 @@ def initialize_session_state():
 
 initialize_session_state()
 
+st.title("Ask Anything About Elon Musk")
+
 footer_container = st.container()
 with footer_container:
     audio_bytes = audio_recorder()
