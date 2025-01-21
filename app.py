@@ -4,11 +4,16 @@ from creating_chain import create_expert_chain
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 # Load environment variables from .env file
+from pineconedb import manage_pinecone_store
+from llModel import initialize_LLM
 
+
+=initialize_LLM()
+retriever=manage_pinecone_store()
 
 retriever=manage_pinecone_store()
 
-chain=create_expert_chain()
+chain=create_expert_chain(LLM,retriever)
 # Build the chain
 # Set the title of the app
 st.title("Ask Anything About Elon Musk")
