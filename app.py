@@ -29,7 +29,7 @@ voice_recording=speech_to_text(language="en",use_container_width=True,just_once=
     
 if voice_recording:
     query=voice_recording
-    st.
+    
 # Chat logic
 if query or voice_recording:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
