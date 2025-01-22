@@ -16,7 +16,6 @@ chain=create_expert_chain(LLM,retriever)
 # Initialize components
 # Chat container to display conversation
 st.title("Ask anything about musk 🤖")
-
 chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -42,7 +41,6 @@ if query or voice_recording:
     st.session_state.messages.append(("user", query))
     st.session_state.messages.append(("ai", response))
     
-chat_container = st.container()
 with chat_container:
     for role, message in st.session_state.messages:
         st.chat_message(role).write(message)
