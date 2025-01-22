@@ -1,5 +1,4 @@
 from pineconedb import manage_pinecone_store
-from creating_chain import create_expert_chain
 from pineconedb import manage_pinecone_store
 from llModel import initialize_LLM
 import streamlit as st
