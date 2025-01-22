@@ -1,8 +1,9 @@
-from langchain_openai import OpenAIEmbeddings
-from langchain_huggingface import HuggingFaceEmbeddings
-import streamlit as st
+from langchain_openai import OpenAIEmbeddings  # Importing OpenAI embeddings
+from langchain_huggingface import HuggingFaceEmbeddings  # Importing HuggingFace embeddings
+import streamlit as st  # Importing Streamlit for secret management
 
-OPENAI_API_KEY=st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]  # Fetching the OpenAI API key from Streamlit secrets
+
 def initialize_embeddings(openai_api_key=OPENAI_API_KEY):
     """
     Initialize embeddings using OpenAI or HuggingFace based on the availability of the OpenAI API key.
@@ -13,19 +14,19 @@ def initialize_embeddings(openai_api_key=OPENAI_API_KEY):
     Returns:
         Embeddings object: An instance of OpenAIEmbeddings or HuggingFaceEmbeddings.
     """
-    # Retrieve the OpenAI API key (default to an environment variable if not explicitly provided)
+    # Check if OpenAI API key is provided or retrieve from environment variable
     openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
 
-    if openai_api_key:  # Use OpenAI embeddings if the API key is available
+    if openai_api_key:  # If OpenAI API key is available, use OpenAI embeddings
         embeddings = OpenAIEmbeddings(
-            model="text-embedding-3-small",  # Use the desired OpenAI model
+            model="text-embedding-3-small",  # Define the OpenAI model
             openai_api_key=openai_api_key
         )
-        print("Using OpenAIEmbeddings")
-    else:  # Fallback to HuggingFace embeddings if no OpenAI API key is found
+        print("Using OpenAIEmbeddings")  # Log which embeddings are being used
+    else:  # If no OpenAI API key, fallback to HuggingFace embeddings
         embeddings = HuggingFaceEmbeddings(
-            model_name="BAAI/bge-small-en-v1.5"  # Use the desired HuggingFace model
+            model_name="BAAI/bge-small-en-v1.5"  # Define the HuggingFace model
         )
-        print("Using HuggingFaceEmbeddings")
+        print("Using HuggingFaceEmbeddings")  # Log which embeddings are being used
     
-    return embeddings
+    return embeddings  # Return the initialized embeddings object
