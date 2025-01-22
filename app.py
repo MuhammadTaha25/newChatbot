@@ -15,7 +15,7 @@ chain=create_expert_chain(LLM,retriever)
 # Set the title of the app
 # Initialize components
 # Chat container to display conversation
-st.title("Ask anything about musk 🤖")
+st.title("  Ask anything about musk 🤖")
 chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
