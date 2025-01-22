@@ -23,8 +23,8 @@ if "messages" not in st.session_state:
 def send_input():
     st.session_state.send_input=True
    
-    query= st.text_input("Please enter a query", key="query", on_change=send_input)
-    send_button = st.button("Send", key="send_btn")  # Single send button
+query= st.text_input("Please enter a query", key="query", on_change=send_input)
+send_button = st.button("Send", key="send_btn")  # Single send button
     
 with st.container():
     voice_recording=speech_to_text(language="en",use_container_width=True,just_once=True,key="STT")
