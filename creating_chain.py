@@ -16,7 +16,7 @@ def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     openai_api_key = openai_api_key or OPENAI_API_KEY
     gemini_api_key = gemini_api_key or GOOGLE_API_KEY
 
-    if openai_api_key:# CHECKING OPENAI API KEY NOT NULL
+    if openai_api_key:
         try:
             model_name = "gpt-3.5-turbo"
             LLM = ChatOpenAI(
@@ -27,7 +27,6 @@ def initialize_LLM(openai_api_key=None, gemini_api_key=None):
             print("Using OpenAI's GPT-4 model.")
         except Exception as e:
             raise RuntimeError(f"Failed to initialize OpenAI model: {e}")
-    # USE GEMINI API KEY IF OPENAI CREDIT IS INSUFFICIENT OR API NOT RECIEVED
     elif gemini_api_key:
         try:
             model_name = "gemini-1.5-flash-002"
