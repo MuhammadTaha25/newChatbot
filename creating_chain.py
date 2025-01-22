@@ -1,43 +1,36 @@
-from langchain_google_genai import GoogleGenerativeAI
-from langchain.chat_models import ChatOpenAI
+from langchain.prompts.chat import ChatPromptTemplate
+from langchain.schema import StrOutputParser
+from operator import itemgetter
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
 
-def initialize_LLM(openai_api_key=None, gemini_api_key=None):
+def create_expert_chain(LLM=None, retriever=None):
     """
-    Initialize a Language Learning Model (LLM) using OpenAI or Gemini based on the availability of API keys.
+    Create a chain for answering questions as an expert on Elon Musk.
 
     Parameters:
-        openai_api_key (str, optional): Your OpenAI API key. Defaults to None and uses the environment variable if not provided.
-        gemini_api_key (str, optional): Your Gemini API key. Defaults to None and uses the environment variable if not provided.
+        llm (object): The language model to use for generating responses.
+        retriever (object): A retriever for fetching relevant context based on the question.
 
     Returns:
-        object: An instance of ChatOpenAI (OpenAI model) or GoogleGenerativeAI (Gemini model).
+        object: A configured chain for answering questions about Elon Musk.
     """
-    # Use explicitly provided API keys or fallback to environment variables
-    openai_api_key = openai_api_key or OPENAI_API_KEY
-    gemini_api_key = gemini_api_key or GOOGLE_API_KEY
+    # Define the prompt template
+    prompt_str = """
+You are a highly knowledgeable and conversational chatbot specializing in providing accurate and insightful information about Elon Musk.
+Answer all questions as if you are an expert on his life, career, companies, and achievements. You are trained to answer question related to the provied
+context if a user ask question which is different from the context you have to say  :" I am train to answer questions related to Elon Musk only."
+Context: {context}
+Question: {question}
+    """
+    _prompt = ChatPromptTemplate.from_template(prompt_str)
 
-    if openai_api_key:
-        try:
-            model_name = "gpt-3.5-turbo"
-            LLM = ChatOpenAI(
-                model_name=model_name,
-                openai_api_key=openai_api_key,
-                temperature=0
-            )
-            print("Using OpenAI's GPT-4 model.")
-        except Exception as e:
-            raise RuntimeError(f"Failed to initialize OpenAI model: {e}")
-    elif gemini_api_key:
-        try:
-            model_name = "gemini-1.5-flash-002"
-            LLM = GoogleGenerativeAI(
-                model=model_name,
-                google_api_key=gemini_api_key
-            )
-            print("Using Gemini's model.")
-        except Exception as e:
-            raise RuntimeError(f"Failed to initialize Gemini model: {e}")
-    else:
-        raise ValueError("No API keys provided. Please set the OpenAI or Gemini API key.")
+    # Chain setup
+    query_fetcher = itemgetter("question")  # Extract the question from input
+    setup = {
+        "question": query_fetcher,          # Fetch the question from input
+        "context": query_fetcher | retriever|format_docs  # Combine the question with the retriever
+    }
+    _chain = setup | _prompt | LLM | StrOutputParser()
 
-    return LLM
+    return _chain
