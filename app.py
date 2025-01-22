@@ -1,5 +1,6 @@
 from pineconedb import manage_pinecone_store
 from pineconedb import manage_pinecone_store
+from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 import streamlit as st
 from streamlit_mic_recorder import speech_to_text
