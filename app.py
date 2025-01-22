@@ -25,11 +25,11 @@ def send_input():
 query= st.text_input("Please enter a query", key="query", on_change=send_input)
 send_button = st.button("Send", key="send_btn")  # Single send button
     
-with st.container():
-    voice_recording=speech_to_text(language="en",use_container_width=True,just_once=True,key="STT")
+voice_recording=speech_to_text(language="en",use_container_width=True,just_once=True,key="STT")
     
 if voice_recording:
     query=voice_recording
+    st.
 # Chat logic
 if query or voice_recording:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
