@@ -19,7 +19,7 @@ chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-
+st.title("Ask anything about musk 🤖")
 def send_input():
     st.session_state.send_input=True
    
