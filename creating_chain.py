@@ -1,44 +1,44 @@
-from langchain.prompts.chat import ChatPromptTemplate  # Importing ChatPromptTemplate to create custom prompts
-from langchain.schema import StrOutputParser  # Importing StrOutputParser for formatting the output
-from operator import itemgetter  # Importing itemgetter to fetch data from input
+beife comments "   from langchain_google_genai import GoogleGenerativeAI
+from langchain.chat_models import ChatOpenAI
 
-def format_docs(docs):
+def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     """
-    Format the document content by joining all pages' content.
+    Initialize a Language Learning Model (LLM) using OpenAI or Gemini based on the availability of API keys.
 
     Parameters:
-        docs (list): List of documents with page content.
+        openai_api_key (str, optional): Your OpenAI API key. Defaults to None and uses the environment variable if not provided.
+        gemini_api_key (str, optional): Your Gemini API key. Defaults to None and uses the environment variable if not provided.
 
     Returns:
-        str: Combined string of document contents.
+        object: An instance of ChatOpenAI (OpenAI model) or GoogleGenerativeAI (Gemini model).
     """
-    return "\n\n".join(doc.page_content for doc in docs)  # Join page content with double newlines
+    # Use explicitly provided API keys or fallback to environment variables
+    openai_api_key = openai_api_key or OPENAI_API_KEY
+    gemini_api_key = gemini_api_key or GOOGLE_API_KEY
 
-def create_expert_chain(LLM=None, retriever=None):
-    """
-    Create a chain for answering questions as an expert on Elon Musk.
+    if openai_api_key:# CHECKING OPENAI API KEY NOT NULL
+        try:
+            model_name = "gpt-3.5-turbo"
+            LLM = ChatOpenAI(
+                model_name=model_name,
+                openai_api_key=openai_api_key,
+                temperature=0
+            )
+            print("Using OpenAI's GPT-4 model.")
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize OpenAI model: {e}")
+    # USE GEMINI API KEY IF OPENAI CREDIT IS INSUFFICIENT OR API NOT RECIEVED
+    elif gemini_api_key:
+        try:
+            model_name = "gemini-1.5-flash-002"
+            LLM = GoogleGenerativeAI(
+                model=model_name,
+                google_api_key=gemini_api_key
+            )
+            print("Using Gemini's model.")
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize Gemini model: {e}")
+    else:
+        raise ValueError("No API keys provided. Please set the OpenAI or Gemini API key.")
 
-    Parameters:
-        LLM (object): The language model to use for generating responses.
-        retriever (object): A retriever for fetching relevant context based on the question.
-
-    Returns:
-        object: A configured chain for answering questions about Elon Musk.
-    """
-    # Define the prompt template for generating expert answers about Elon Musk
-    prompt_str = """
-You are a highly knowledgeable and conversational chatbot specializing in providing accurate and insightful information about Elon Musk.
-Answer all questions as if you are an expert on his life, career, companies, and achievements. You are trained to answer questions related to the provided
-context. If a user asks a question unrelated to the context, you will say: "I am trained to answer questions related to Elon Musk only."
-Context: {context}
-Question: {question}
-    """
-    _prompt = ChatPromptTemplate.from_template(prompt_str)  # Create the prompt from the template
-
-    # Chain setup to fetch the question and context
-    query_fetcher = itemgetter("question")  # Extract the question from the input
-    setup = {
-        "question": query_fetcher,          # Fetch the question
-        "context": query_fetcher | retriever | format_docs  # Combine question with retriever and document content
-    }
-    _chain = setup | _prompt | LLM | StrOutputParser()  # Set up the chain for response generat
+    return LLM
