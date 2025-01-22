@@ -1,4 +1,4 @@
-beife comments "   from langchain_google_genai import GoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAI
 from langchain.chat_models import ChatOpenAI
 
 def initialize_LLM(openai_api_key=None, gemini_api_key=None):
