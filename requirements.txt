@@ -12,3 +12,4 @@ streamlit-float
 streamlit-mic-recorder
 audio_recorder_streamlit
 bs4
+python-dotenv
