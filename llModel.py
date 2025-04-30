@@ -18,13 +18,23 @@ def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     openai_api_key = openai_api_key or OPENAI_API_KEY
     gemini_api_key = gemini_api_key or GOOGLE_API_KEY
 
+# response = openai.ChatCompletion.create(
+#     model="gpt-4-turbo",
+#     messages=[{"role": "user", "content": "Tell me a joke"}],
+    
+# )
+
+# for chunk in response:
+#     print(chunk["choices"][0]["delta"].get("content", ""), end="")
+
     if openai_api_key:
         try:
-            model_name = "gpt-3.5-turbo"
+            model_name = "gpt-4-turbo"
             LLM = ChatOpenAI(
                 model_name=model_name,
                 openai_api_key=openai_api_key,
-                temperature=0
+                temperature=0,
+                stream=True
             )
             print("Using OpenAI's GPT-4 model.")
         except Exception as e:
