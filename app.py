@@ -33,7 +33,7 @@ if voice_recording:
 # Chat logic
 if query or voice_recording:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
-        response =chain.invoke({'question': query})
+        response =chain.stream({'question': query})
         print(response)
 
     # Generate response
