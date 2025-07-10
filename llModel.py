@@ -2,6 +2,11 @@ from langchain_google_genai import GoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 
+langsmith_tracing='true'
+langsmith_endpoint="https://api.smith.langchain.com"
+langsmith_api_key="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"
+langsmith_project="muskchatbot"
+OPENAI_API_KEY=st.secrets
 load_dotenv()
 def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     """
