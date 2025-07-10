@@ -5,10 +5,6 @@ from llModel import initialize_LLM
 import streamlit as st
 from streamlit_mic_recorder import speech_to_text
 
-LANGSMITH_TRACING='true'
-LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-LANGSMITH_API_KEY="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"
-LANGSMITH_PROJECT="muskchatbot"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 GOOGLE_API_KEY =st.secrets['google_api_key']
 
@@ -47,4 +43,4 @@ if query or voice_recording:
     
 with chat_container:
     for role, message in st.session_state.messages:
-        st.chat_message(role).write(message) 
+        st.chat_message(role).write(message)  
