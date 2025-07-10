@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import streamlit as st
 
-LANGSMITH_TRACING=true
+LANGSMITH_TRACING='true'
 LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
 LANGSMITH_API_KEY="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"
 LANGSMITH_PROJECT="pr-cooked-opportunity-37"
