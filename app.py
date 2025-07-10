@@ -1,51 +1,14 @@
-LANGSMITH_TRACING="true"
-LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-LANGSMITH_API_KEY="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"
-LANGSMITH_PROJECT="muskchatbot"
 from pineconedb import manage_pinecone_store
 from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 import streamlit as st
 from streamlit_mic_recorder import speech_to_text
+
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 GOOGLE_API_KEY =st.secrets['google_api_key']
 
-# app.py
-from dotenv import load_dotenv
-import os
-
-load_dotenv()   # ← loads everything from .env into os.environ
-
-import streamlit as st
-from pineconedb import manage_pinecone_store
-from creating_chain import create_expert_chain
-from llModel import initialize_LLM
-from streamlit_mic_recorder import speech_to_text
-
-# now fetch them exactly once
-OPENAI_API_KEY     = os.getenv("OPENAI_API_KEY")
-GOOGLE_API_KEY     = os.getenv("GOOGLE_API_KEY")
-PINECONE_INDEX     = os.getenv("PINECONE_INDEX_NAME")
-# And LangSmith
-LANGSMITH_TRACING  = os.getenv("LANGSMITH_TRACING") == "true"
-LANGSMITH_ENDPOINT = os.getenv("LANGSMITH_ENDPOINT")
-LANGSMITH_API_KEY  = os.getenv("LANGSMITH_API_KEY")
-LANGSMITH_PROJECT  = os.getenv("LANGSMITH_PROJECT")
-
-# pass those into initialize_LLM (you might need to extend its signature)
-LLM = initialize_LLM(openai_api_key=OPENAI_API_KEY,
-                     gemini_api_key=GOOGLE_API_KEY,
-                     # langsmith_api_key=LANGSMITH_API_KEY,
-                     # langsmith_endpoint=LANGSMITH_ENDPOINT,
-                     # langsmith_project=LANGSMITH_PROJECT,
-                     # langsmith_tracing=LANGSMITH_TRACING
-                    )
-
-retriever = manage_pinecone_store(index_name=PINECONE_INDEX, embeddings=...)
-chain     = create_expert_chain(LLM, retriever)
-
-st.title("Ask anything about Musk")
+LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 retriever=manage_pinecone_store()
 chain=create_expert_chain(LLM,retriever)
 # Build the chain
