@@ -17,9 +17,7 @@ LANGSMITH_PROJECT="muskchatbot"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 
 LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
-@traceable
 retriever=manage_pinecone_store()
-@traceable
 chain=create_expert_chain(LLM,retriever)
 # Build the chain
 # Set the title of the app
