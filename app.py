@@ -4,6 +4,9 @@ from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 import streamlit as st
 from streamlit_mic_recorder import speech_to_text
+from openai import OpenAI
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
 
 GOOGLE_API_KEY =st.secrets['google_api_key']
 openai_client = wrap_openai(OpenAI())
