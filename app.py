@@ -39,7 +39,8 @@ LLM = initialize_LLM(openai_api_key=OPENAI_API_KEY,
                      # langsmith_api_key=LANGSMITH_API_KEY,
                      # langsmith_endpoint=LANGSMITH_ENDPOINT,
                      # langsmith_project=LANGSMITH_PROJECT,
-                     # langsmith_tracing=LANGSMITH_TRACING)
+                     # langsmith_tracing=LANGSMITH_TRACING
+                    )
 
 retriever = manage_pinecone_store(index_name=PINECONE_INDEX, embeddings=...)
 chain     = create_expert_chain(LLM, retriever)
