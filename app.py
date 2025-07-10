@@ -16,8 +16,7 @@ LANGSMITH_API_KEY="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"
 LANGSMITH_PROJECT="muskchatbot"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 
-@traceable
-Large_lanugage_model=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
+LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 @traceable
 retriever=manage_pinecone_store()
 @traceable
