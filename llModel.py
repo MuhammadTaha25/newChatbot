@@ -5,8 +5,8 @@ import streamlit as st
 
 LANGSMITH_TRACING='true'
 LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-LANGSMITH_API_KEY="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"
-LANGSMITH_PROJECT="pr-cooked-opportunity-37"
+LANGSMITH_API_KEY="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"
+LANGSMITH_PROJECT="muskchatbot"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 load_dotenv()
 def initialize_LLM(openai_api_key=None, gemini_api_key=None):
