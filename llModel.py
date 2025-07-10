@@ -3,10 +3,10 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import streamlit as st
 
-langsmith_tracing='true'
-langsmith_endpoint="https://api.smith.langchain.com"
-langsmith_api_key="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"
-langsmith_project="muskchatbot"
+LANGSMITH_TRACING=true
+LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+LANGSMITH_API_KEY="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"
+LANGSMITH_PROJECT="pr-cooked-opportunity-37"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 load_dotenv()
 def initialize_LLM(openai_api_key=None, gemini_api_key=None):
