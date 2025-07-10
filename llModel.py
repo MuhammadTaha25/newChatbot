@@ -2,13 +2,17 @@ from langchain_google_genai import GoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import streamlit as st
-
+from openai import OpenAI
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
+load_dotenv()
+openai_client = wrap_openai(OpenAI())
 LANGSMITH_TRACING='true'
 LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
 LANGSMITH_API_KEY="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"
 LANGSMITH_PROJECT="muskchatbot"
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
-load_dotenv()
+@traceable
 def initialize_LLM(openai_api_key=None, gemini_api_key=None):
     """
     Initialize a Language Learning Model (LLM) using OpenAI or Gemini based on the availability of API keys.
