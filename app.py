@@ -45,7 +45,6 @@ retriever = manage_pinecone_store(index_name=PINECONE_INDEX, embeddings=...)
 chain     = create_expert_chain(LLM, retriever)
 
 st.title("Ask anything about Musk")
-…
 retriever=manage_pinecone_store()
 chain=create_expert_chain(LLM,retriever)
 # Build the chain
