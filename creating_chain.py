@@ -1,10 +1,10 @@
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from operator import itemgetter
-from openai import OpenAI
-from langsmith import traceable
-from langsmith.wrappers import wrap_openai
-openai_client = wrap_openai(OpenAI())
+# from openai import OpenAI
+# from langsmith import traceable
+# from langsmith.wrappers import wrap_openai
+# openai_client = wrap_openai(OpenAI())
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
