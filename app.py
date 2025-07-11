@@ -45,6 +45,7 @@ if query or voice_recording:
     st.session_state.messages.append(("user", query))
     st.session_state.messages.append(("ai", response))
     
-with chat_container:
+with st.container():
     for role, message in st.session_state.messages:
-        st.chat_message(role).write(message) 
+        st.chat_message(role).write(message)
+
