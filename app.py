@@ -16,11 +16,11 @@ langsmith_project="muskchatbot"
 
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 GOOGLE_API_KEY =st.secrets['google_api_key']
-@traceable
+# @traceable
 initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 
 manage_pinecone_store()
-@traceable
+# @traceable
 create_expert_chain(initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY),manage_pinecone_store())
 # Build the chain
 # Set the title of the app
