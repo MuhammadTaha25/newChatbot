@@ -42,13 +42,16 @@ if voice_recording:
 # Chat logic
 if query or voice_recording:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
-        response =chain.stream({'question': query})
-        print(response)
+        response_stream = chain.stream({'question': query})
+        response_text = ""
+        for chunk in response_stream:
+            response_text += chunk.get("answer", "")  # Adjust key if needed
+
 
     # Generate response
     # Update session state with user query and AI response
     st.session_state.messages.append(("user", query))
-    st.session_state.messages.append(("ai", response))
+    st.session_state.messages.append(("ai", response_text))
     
 with chat_container:
     for role, message in st.session_state.messages:
