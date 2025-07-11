@@ -4,7 +4,11 @@ from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 import streamlit as st
 from streamlit_mic_recorder import speech_to_text
+from openai import OpenAI
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
 
+openai_client = wrap_openai(OpenAI())
 langsmith_tracing='true'
 langsmith_endpoint="https://api.smith.langchain.com"
 langsmith_api_key="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"
@@ -12,7 +16,7 @@ langsmith_project="muskchatbot"
 
 OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
 GOOGLE_API_KEY =st.secrets['google_api_key']
-
+@traceable
 LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
 retriever=manage_pinecone_store()
 chain=create_expert_chain(LLM,retriever)
