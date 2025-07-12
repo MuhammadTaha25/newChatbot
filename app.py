@@ -21,7 +21,7 @@ chain     = create_expert_chain(LLM, retriever)
 
 # Streamlit UI
 st.title("Ask anything about Musk")
-
+chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -57,8 +57,9 @@ if (query and st.session_state.send_input) or voice_recording:
                 response_text += str(chunk)
 
     # 3) update session state
-    st.session_state.messages.append(("user", query))
-    st.session_state.messages.append(("assistant", response_text))
+    with st.container():
+        st.session_state.messages.append(("user", query))
+        st.session_state.messages.append(("assistant", response_text))
     # reset send flag so it doesn’t re-run
     st.session_state.send_input = False
 
