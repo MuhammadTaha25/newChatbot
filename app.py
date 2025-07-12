@@ -61,7 +61,6 @@ if (query and st.session_state.send_input) or voice_recording:
         st.session_state.messages.append(("user", query))
         st.session_state.messages.append(("assistant", response_text))
     # reset send flag so it doesn’t re-run
-    st.session_state.query = ""
     st.session_state.send_input = False
 
 # Finally, render the chat log
