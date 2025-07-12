@@ -1,19 +1,19 @@
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from operator import itemgetter
-# from openai import OpenAI
-# from langsmith import traceable
-# from langsmith.wrappers import wrap_openai
-# openai_client = wrap_openai(OpenAI())
+from openai import OpenAI
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
+openai_client = wrap_openai(OpenAI())
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
 
-# langsmith_tracing='true'
-# langsmith_endpoint="https://api.smith.langchain.com"
-# langsmith_api_key="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"
-# langsmith_project="muskchatbot"
-# @traceable
+langsmith_tracing='true'
+langsmith_endpoint="https://api.smith.langchain.com"
+langsmith_api_key="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"
+langsmith_project="muskchatbot"
+@traceable
 def create_expert_chain(LLM=None, retriever=None):
     """
     Create a chain for answering questions as an expert on Elon Musk.
