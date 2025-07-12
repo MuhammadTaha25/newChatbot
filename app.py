@@ -106,7 +106,7 @@ if voice_recording:
     query=voice_recording
     
 # Chat logic
-if query or voice_recording:
+if (query and st.session_state.send_input) or voice_recording:
     with st.spinner("Processing... Please wait!"):  # Spinner starts here
         response =chain.stream({'question': query})
         print(response)
