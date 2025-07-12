@@ -44,7 +44,7 @@ if query or voice_recording:
 
 st.session_state.messages.append(("ai", response_text))
 
-        print(response)
+        print(response_text)
 
     # Generate response
     # Update session state with user query and AI response
