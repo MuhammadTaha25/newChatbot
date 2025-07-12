@@ -44,7 +44,7 @@ if voice_recording:
 
 # Only run the chain when user actually submits something
 if (query and st.session_state.send_input) or voice_recording:
-    with st.spinner("Processing... Please wait!"):
+    with chat_container.spinner("Processing... Please wait!"):
         # 1) kick off the stream
         response_stream = chain.stream({"question": query})
         # 2) accumulate into a single string
