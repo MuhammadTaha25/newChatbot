@@ -1,4 +1,25 @@
-# —– UI setup pehle —–
+from pineconedb import manage_pinecone_store
+from creating_chain import create_expert_chain
+from llModel import initialize_LLM
+import streamlit as st
+from streamlit_mic_recorder import speech_to_text
+
+# — LangSmith config (if you actually use it) —
+langsmith_tracing  = "true"
+langsmith_endpoint = "https://api.smith.langchain.com"
+langsmith_api_key  = "your_langsmith_api_key"
+langsmith_project  = "muskchatbot"
+
+# Load your keys
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+GOOGLE_API_KEY  = st.secrets["google_api_key"]
+
+# Initialize LLM, retriever, chain
+LLM       = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
+retriever = manage_pinecone_store()
+chain     = create_expert_chain(LLM, retriever)
+
+# Streamlit UI
 st.title("Ask anything about Musk")
 
 # Placeholder bana lo yahan, mic recorder se pehle
@@ -40,4 +61,3 @@ if (query and st.session_state.send_input) or voice_recording:
 with chat_container:
     for role, message in st.session_state.messages:
         st.chat_message(role).write(message)
-
