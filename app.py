@@ -21,43 +21,49 @@ chain     = create_expert_chain(LLM, retriever)
 
 # Streamlit UI
 st.title("Ask anything about Musk")
+chat_container = st.container()
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# Placeholder bana lo yahan, mic recorder se pehle
-spinner_placeholder = st.empty()
+def send_input():
+    st.session_state.send_input = True
 
-# Mic recorder
+# Text input + send button
+query = st.text_input("Please enter a query", key="query", on_change=send_input)
+st.button("Send", key="send_btn")
+
+# Optional voice input
 voice_recording = speech_to_text(
     language="en",
     use_container_width=True,
     just_once=True,
     key="STT"
 )
+if voice_recording:
+    query = voice_recording
 
-# Text input + send button
-query = st.text_input("Please enter a query", key="query", on_change=send_input)
-st.button("Send", key="send_btn")
-
-# —– Chat processing —–
+# Only run the chain when user actually submits something
 if (query and st.session_state.send_input) or voice_recording:
-    # Yahan placeholder ke andar spinner show hoga
-    with spinner_placeholder.spinner("Processing... Please wait!"):
+    with st.spinner("Processing... Please wait!"):
+        # 1) kick off the stream
         response_stream = chain.stream({"question": query})
+        # 2) accumulate into a single string
         response_text = ""
         for chunk in response_stream:
+            # if chunk is a dict, use .get("answer"); otherwise just add chunk
             if isinstance(chunk, dict):
                 response_text += chunk.get("answer", "")
             else:
                 response_text += str(chunk)
 
-    # Jab processing khatam ho jaye, placeholder ko clear kar do
-    spinner_placeholder.empty()
-
-    # Messages update kar do
-    st.session_state.messages.append(("user", query))
-    st.session_state.messages.append(("assistant", response_text))
+    # 3) update session state
+    with chat_container:
+        st.session_state.messages.append(("user", query))
+        st.session_state.messages.append(("assistant", response_text))
+    # reset send flag so it doesn’t re-run
     st.session_state.send_input = False
 
-# —– Render chat log —–
+# Finally, render the chat log
 with chat_container:
     for role, message in st.session_state.messages:
         st.chat_message(role).write(message)
