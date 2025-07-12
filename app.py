@@ -66,5 +66,3 @@ if (query and st.session_state.send_input) or voice_recording:
 with st.container():
     for role, message in st.session_state.messages:
         st.chat_message(role).write(message)
-
-
