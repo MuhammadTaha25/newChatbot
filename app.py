@@ -40,7 +40,7 @@ if query or voice_recording:
         response =chain.stream({'question': query})
         response_text = ""
         for chunk in response_stream:
-        response_text += chunk.get("answer", "")  # Adjust key if needed
+            response_text += chunk.get("answer", "")  # Adjust key if needed
 
 st.session_state.messages.append(("ai", response_text))
 
