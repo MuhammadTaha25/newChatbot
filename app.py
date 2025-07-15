@@ -20,7 +20,9 @@ chain=create_expert_chain(LLM,retriever)
 # Set the title of the app
 # Initialize components
 # Chat container to display conversation
-st.title("Ask anything about Musk")
+st.set_page_config(page_title="Musk ChatBot | Ask Elon-Level Questions")
+st.title("🤖 Musk ChatBot — Ask Anything, Anytime 🚀")
+
 chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
