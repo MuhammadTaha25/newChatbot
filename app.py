@@ -20,31 +20,7 @@ chain=create_expert_chain(LLM,retriever)
 # Set the title of the app
 # Initialize components
 # Chat container to display conversation
-from pineconedb import manage_pinecone_store
-from pineconedb import manage_pinecone_store
-from creating_chain import create_expert_chain
-from llModel import initialize_LLM
-import streamlit as st
-from streamlit_mic_recorder import speech_to_text
-
-langsmith_tracing='true'
-langsmith_endpoint="https://api.smith.langchain.com"
-langsmith_api_key="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"
-langsmith_project="muskchatbot"
-
-OPENAI_API_KEY =st.secrets['OPENAI_API_KEY']
-GOOGLE_API_KEY =st.secrets['google_api_key']
-
-LLM=initialize_LLM(OPENAI_API_KEY,GOOGLE_API_KEY)
-retriever=manage_pinecone_store()
-chain=create_expert_chain(LLM,retriever)
-# Build the chain
-# Set the title of the app
-# Initialize components
-# Chat container to display conversation
-st.set_page_config(page_title="Musk ChatBot | Ask Elon-Level Questions", layout="wide")
-st.title("🤖 Musk ChatBot — Ask Anything, Anytime 🚀")
-
+st.title("Ask anything about Musk")
 chat_container = st.container()
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -73,9 +49,3 @@ if (query and st.session_state.send_input) or voice_recording:
 with chat_container:
     for role, message in st.session_state.messages:
         st.chat_message(role).write(message) 
-chat_container = st.container()
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-def send_input():
-    st.session_state.send_input=True
-   
