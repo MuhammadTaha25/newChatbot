@@ -79,25 +79,3 @@ if "messages" not in st.session_state:
 def send_input():
     st.session_state.send_input=True
    
-query= st.text_input("Please enter a query", key="query", on_change=send_input)
-send_button = st.button("Send", key="send_btn")  # Single send button
-    
-voice_recording=speech_to_text(language="en",use_container_width=True,just_once=True,key="STT")
-    
-if voice_recording:
-    query=voice_recording
-    
-# Chat logic
-if (query and st.session_state.send_input) or voice_recording:
-    with st.spinner("Processing... Please wait!"):  # Spinner starts here
-        response =chain.stream({'question': query})
-        print(response)
-
-    # Generate response
-    # Update session state with user query and AI response
-    st.session_state.messages.append(("user", query))
-    st.session_state.messages.append(("ai", response))
-    
-with chat_container:
-    for role, message in st.session_state.messages:
-        st.chat_message(role).write(message) 
