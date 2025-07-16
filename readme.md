@@ -1,69 +1,75 @@
-# Elon Musk Q&A Chatbot using Streamlit and Pinecone
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-green.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/streamlit-v1.25-orange.svg)](https://streamlit.io)
 
-## Project Overview
-This project implements a conversational AI chatbot that can answer questions about Elon Musk's life, career, companies, and achievements. The system uses a combination of advanced AI models, Pinecone for document retrieval, and Streamlit for the user interface. The chatbot answers questions based on the relevant context extracted from documents related to Elon Musk.
+# MuskChatBot 🤖📄
 
-## Features:
-- **Voice Input**: Allows users to ask questions via voice using the `speech_to_text` function.
-- **Text Input**: Users can type in their queries.
-- **Expert Chatbot**: The chatbot responds as an expert on Elon Musk, leveraging relevant context from the Pinecone vector store.
-- **Contextual Responses**: Uses advanced embeddings and LLMs (OpenAI and Gemini) to generate answers.
+**MuskChatBot** is a focused, document-driven chatbot that answers questions specifically about Elon Musk by ingesting Wikipedia content (or any uploaded PDFs). Built with **LangChain**, **OpenAI LLMs**, and **vector databases**, it delivers fast, context-aware responses via an intuitive **Streamlit** interface.
 
-## Project Components
+---
 
-### 1. `initialize_LLM()` (from `llModel.py`)
-This function initializes the language learning model (LLM) for generating responses to user queries. It supports both OpenAI and Gemini models.
+## 📋 Table of Contents
 
-**Parameters:**
-- `openai_api_key`: Your OpenAI API key (optional, defaults to environment variable).
-- `gemini_api_key`: Your Gemini API key (optional, defaults to environment variable).
+- [✨ Features](#-features)  
+- [🛠 Tech Stack](#-tech-stack)  
+- [⚙️ How It Works](#️-how-it-works)  
+- [🚀 Quick Start](#-quick-start)  
+- [📁 Project Structure](#-project-structure)  
+- [🤝 Contributing](#-contributing)  
+- [📄 License](#-license)
 
-**Returns:**
-- An instance of `ChatOpenAI` (OpenAI) or `GoogleGenerativeAI` (Gemini).
+---
 
-### 2. `manage_pinecone_store()` (from `pineconedb.py`)
-This function manages the Pinecone vector store, either by loading an existing index or creating a new one with the processed documents.
+## ✨ Features
 
-**Parameters:**
-- `index_name`: Pinecone index name (from environment secrets).
-- `embeddings`: The embedding model used for generating vector representations.
+- **📰 Wikipedia Integration**: Automatically load and parse Elon Musk’s Wikipedia page  
+- **📄 PDF Support**: Upload custom PDFs to extend the knowledge base  
+- **❓ Contextual Q&A**: Ask any natural-language question about Musk and get precise answers  
+- **⚡ Real-Time Responses**: Leverages OpenAI LLMs for immediate, coherent replies  
+- **🔍 Semantic Search**: Retrieval-Augmented Generation (RAG) with vector embeddings  
+- **🗃️ Flexible Vector Stores**: Supports FAISS, Chroma, etc.  
+- **🧩 Modular Architecture**: Swap loaders, splitters, and stores with minimal changes  
 
-**Returns:**
-- A retriever object for fetching relevant document chunks from the Pinecone index.
+---
 
-### 3. `create_expert_chain()` (from `creating_chain.py`)
-This function creates a question-answer chain using the initialized LLM and the retriever (from Pinecone). The chain is configured to answer questions specifically about Elon Musk.
+## 🛠 Tech Stack
 
-**Parameters:**
-- `LLM`: The initialized language model (either OpenAI or Gemini).
-- `retriever`: The retriever object for fetching document chunks.
+| Component           | Technology                                 |
+|---------------------|--------------------------------------------|
+| **UI**              | Streamlit                                  |
+| **LLM Integration** | OpenAI (via LangChain)                     |
+| **Embeddings**      | OpenAIEmbeddings                           |
+| **Vector Database** | FAISS / Chroma                             |
+| **Data Loaders**    | WikipediaLoader / PyMuPDF / PDFMiner       |
+| **Language**        | Python ≥ 3.8                               |
 
-**Returns:**
-- A chain object that uses the LLM and retriever to generate expert answers.
+---
 
-### 4. `speech_to_text()` (from `streamlit_mic_recorder`)
-This function converts voice input into text, enabling voice queries from users.
+## ⚙️ How It Works
 
-**Parameters:**
-- `language`: Language of the voice input (default: English).
-- `use_container_width`: Use container width for layout (optional).
-- `just_once`: Capture the voice input only once (optional).
+1. **Data Ingestion**  
+   - Fetch Elon Musk’s Wikipedia content via a web-based loader  
+   - (Optional) Upload additional PDFs  
 
-**Returns:**
-- The converted text from the recorded speech.
+2. **Chunk & Embed**  
+   - Split text into manageable chunks (e.g., 500 tokens)  
+   - Convert each chunk into vector embeddings  
 
-### 5. Streamlit
-Streamlit is used to create the web interface for the chatbot.
+3. **Indexing**  
+   - Store embeddings in the configured vector database  
 
-**Key Components:**
-- `st.title()`: Sets the title of the Streamlit app.
-- `st.text_input()`: Accepts text input from the user for queries.
-- `st.button()`: A button for submitting queries.
-- `st.session_state`: Stores chat messages and manages the state of the conversation.
-- `st.spinner()`: Displays a loading spinner while processing user input.
-- `st.chat_message()`: Displays messages in a conversational chat format.
+4. **Query Processing**  
+   - Embed the user’s question and perform a semantic similarity search  
 
-## Usage
-- The app will prompt you to enter a query either through text or voice input.
-- You can ask questions about Elon Musk, and the chatbot will provide responses based on the retrieved context.
-- If the query is outside the context of Elon Musk, the chatbot will reply: "I am trained to answer questions related to Elon Musk only."
+5. **Answer Generation**  
+   - Retrieve top-k relevant chunks  
+   - Pass them to the LLM to craft a concise, context-aware answer  
+
+---
+
+## 🚀 Quick Start
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/yourusername/MuskChatBot.git
+   cd MuskChatBot
