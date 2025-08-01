@@ -30,7 +30,7 @@ if "turn" not in st.session_state:
     st.session_state.turn = 0
 
 # ——— UI controls ———
-st.title("🎙️ Musk ChatBot (Voice Only)")
+st.title("🎙️ Musk ChatBot")
 st.write("Record your question and hear Elon-level voice responses!")
 
 # Create recording button
@@ -69,7 +69,7 @@ if audio_bytes:
             })
             
             # Generate AI response
-            with st.spinner("Elon is thinking..."):
+            with st.spinner("Generating Your Reponse"):
                 result = chain.stream({"question": transcript})
                 ai_text = "".join(result) if hasattr(result, "__iter__") else str(result)
             
