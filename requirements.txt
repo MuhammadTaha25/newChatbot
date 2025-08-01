@@ -2,8 +2,6 @@ langchain
 langchain-community
 langsmith
 langchain_huggingface
-Path
-async
 transformers
 langchain_pinecone
 langchain-google-genai
