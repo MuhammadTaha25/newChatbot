@@ -1,6 +1,6 @@
 langchain
 langchain-community
-pydub
+streamlit-audiorecorder
 langsmith
 langchain_huggingface
 streamlit-audiorecorder
