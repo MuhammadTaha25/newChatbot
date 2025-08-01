@@ -1,9 +1,10 @@
 import openai
 import streamlit as st
 from pathlib import Path
-from streamlit_mic_recorder import mic_recorder, speech_to_text
-import time
+from streamlit_mic_recorder import mic_recorder
+import io
 import os
+import time
 
 from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
@@ -27,8 +28,6 @@ if "conversation" not in st.session_state:
     st.session_state.conversation = []
 if "turn" not in st.session_state:
     st.session_state.turn = 0
-if "recording" not in st.session_state:
-    st.session_state.recording = False
 
 # ——— UI controls ———
 st.title("🎙️ Musk ChatBot (Voice Only)")
@@ -45,19 +44,21 @@ audio_bytes = mic_recorder(
 
 # Process audio if recorded
 if audio_bytes:
-    st.session_state.recording = True
     with st.spinner("Processing your voice..."):
         # Save user audio to file
         user_audio_path = Path(__file__).parent / f"user_input_{st.session_state.turn}.wav"
         with open(user_audio_path, "wb") as f:
             f.write(audio_bytes['bytes'])
         
-        # Transcribe audio
-        transcript = speech_to_text(
-            audio_bytes=audio_bytes['bytes'],
-            language='en',
-            key=f"stt_{st.session_state.turn}"
-        )
+        # Transcribe audio using Whisper
+        audio_file = io.BytesIO(audio_bytes['bytes'])
+        audio_file.name = "recording.wav"
+        
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file,
+            language="en"
+        ).text
         
         if transcript:
             # Add to conversation history
@@ -89,7 +90,6 @@ if audio_bytes:
             })
             
             st.session_state.turn += 1
-            st.session_state.recording = False
             st.rerun()
 
 # ——— Display conversation history ———
