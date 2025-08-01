@@ -28,31 +28,12 @@ if "conversation" not in st.session_state:
     st.session_state.conversation = []
 if "turn" not in st.session_state:
     st.session_state.turn = 0
-if "last_interaction" not in st.session_state:
-    st.session_state.last_interaction = 0
 
 # ——— UI controls ———
 st.title("🎙️ Musk ChatBot (Voice Only)")
 st.write("Record your question and hear Elon-level voice responses!")
 
-# ——— Display conversation history at the top ———
-st.markdown("## Conversation History")
-history_container = st.container()
-
-# Auto-scroll to bottom
-st.markdown(
-    """
-    <script>
-    function scrollToBottom() {
-        window.parent.document.querySelector('section.main').scrollTo(0, window.parent.document.querySelector('section.main').scrollHeight);
-    }
-    </script>
-    """,
-    unsafe_allow_html=True
-)
-
-# Create recording button at the bottom
-st.markdown("---")
+# Create recording button
 st.write("### Record your question:")
 audio_bytes = mic_recorder(
     start_prompt="🎤 Start Recording",
@@ -109,52 +90,42 @@ if audio_bytes:
             })
             
             st.session_state.turn += 1
-            st.session_state.last_interaction = time.time()
             st.rerun()
 
-# Display conversation in history container
-with history_container:
-    if st.session_state.conversation:
-        for idx, message in enumerate(st.session_state.conversation):
-            if message["role"] == "bot":
-                # Left column for bot responses
-                with st.container():
-                    col1, col2 = st.columns([1, 4])
-                    with col1:
-                        st.markdown("**Elon Bot:**")
-                        st.audio(message["audio"], format="audio/mp3")
-                    with col2:
-                        with st.expander("See transcript"):
-                            st.write(message["text"])
-                    st.markdown("---")
-            else:
-                # Right column for user questions
-                with st.container():
-                    col1, col2 = st.columns([4, 1])
-                    with col2:
-                        st.markdown("**You:**")
-                        st.audio(message["audio"], format="audio/wav")
-                    with col1:
-                        with st.expander("See transcript"):
-                            st.write(message["text"])
-                    st.markdown("---")
-    else:
-        st.write("No conversation yet. Record your first question below!")
+# ——— Display conversation history ———
+st.markdown("## Conversation History")
+if st.session_state.conversation:
+    for idx, message in enumerate(st.session_state.conversation):
+        if message["role"] == "bot":
+            # Left column for bot responses
+            with st.container():
+                col1, col2 = st.columns([2, 2])
+                with col1:
+                    st.markdown("**Elon Bot:**")
+                    st.audio(message["audio"], format="audio/mp3")
+                with col2:
+                    with st.expander("See transcript"):
+                        st.write(message["text"])
+                st.markdown("---")
+        else:
+            # Right column for user questions
+            with st.container():
+                col1, col2 = st.columns([3, 3])
+                with col2:
+                    st.markdown("**You:**")
+                    st.audio(message["audio"], format="audio/wav")
+                with col1:
+                    with st.expander("See transcript"):
+                        st.write(message["text"])
+                st.markdown("---")
+else:
+    st.write("No conversation yet. Record your first question above!")
 
 # Clear conversation button
-st.markdown("---")
 if st.button("Clear Conversation"):
     for msg in st.session_state.conversation:
         if os.path.exists(msg["audio"]):
             os.remove(msg["audio"])
     st.session_state.conversation = []
     st.session_state.turn = 0
-    st.session_state.last_interaction = time.time()
     st.rerun()
-
-# Auto-scroll to bottom after interaction
-if st.session_state.last_interaction > 0:
-    st.markdown(
-        f"<script>scrollToBottom();</script>",
-        unsafe_allow_html=True
-    )
