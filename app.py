@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 
 import openai
@@ -9,7 +8,7 @@ from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 
-# ——— Streamlit page config ———
+# ——— Page config ———
 st.set_page_config(page_title="Musk ChatBot | Ask Elon-Level Questions")
 st.title("Ask Anything About Musk")
 
@@ -17,7 +16,6 @@ st.title("Ask Anything About Musk")
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 GOOGLE_API_KEY = st.secrets["google_api_key"]
 
-# OpenAI sync client
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 # TTS settings
@@ -25,26 +23,25 @@ TTS_MODEL = "gpt-4o-mini-tts"
 TTS_VOICE = "echo"
 SPEECH_FILE = Path(__file__).parent / "speech.mp3"
 
-# ——— Initialize LLM chain ———
+# ——— Build the chain ———
 llm = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
 retriever = manage_pinecone_store()
 chain = create_expert_chain(llm, retriever)
 
-# ——— Session state for chat history ———
+# ——— Chat history ———
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# ——— UI inputs ———
-query = st.text_input("Enter your question or use the mic below:", key="query")
+# ——— Inputs ———
+query = st.text_input("Type your question or use the mic below:", key="query")
 send_button = st.button("Send")
+
 voice_recording = speech_to_text(
     language="en",
     just_once=True,
     use_container_width=True,
     key="STT"
 )
-
-# Determine input type
 if voice_recording:
     query = voice_recording
     st.markdown(f"🎤 **You said:** {query}")
@@ -52,25 +49,23 @@ if voice_recording:
 else:
     is_voice = False
 
-# ——— Main handler ———
+# ——— Main logic ———
 if (send_button or is_voice) and query:
-    with st.spinner("Processing... Please wait!"):
-        # instead of chain.run(), call the chain directly
-        result = chain({"question": query})
-        # if chain returns a dict, extract the main text
+    with st.spinner("Thinking..."):
+        # invoke the RunnableSequence synchronously :contentReference[oaicite:0]{index=0}
+        result = chain.invoke({"question": query})
+        # unpack if it returned a dict
         if isinstance(result, dict):
-            # common keys are "text", "answer", or last value
             ai_text = result.get("text") or result.get("answer") or list(result.values())[-1]
         else:
-            # if it's already a string
             ai_text = str(result)
 
-    # Store user & AI messages for text-chat history
+    # for text inputs: show chat bubbles
     if not is_voice:
         st.session_state.messages.append(("user", query))
         st.session_state.messages.append(("ai", ai_text))
 
-    # If input was voice, generate and play audio only
+    # for voice inputs: generate & play TTS only
     if is_voice:
         with client.audio.speech.with_streaming_response.create(
             model=TTS_MODEL,
@@ -81,7 +76,7 @@ if (send_button or is_voice) and query:
             resp.stream_to_file(SPEECH_FILE)
         st.audio(str(SPEECH_FILE), format="audio/mp3")
 
-# ——— Render chat history (text only) ———
+# ——— Render text chat history ———
 for role, msg in st.session_state.messages:
     st.chat_message(role).write(msg)
 
