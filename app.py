@@ -4,7 +4,7 @@ from pathlib import Path
 from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 from pineconedb import manage_pinecone_store
-from streamlit_audio_recorder import audio_recorder  # custom recorder that returns audio bytes
+from streamlit_audiorecorder import audiorecorder
 
 import tempfile
 
@@ -30,7 +30,7 @@ st.title("🎤 Musk ChatBot with Voice Chat")
 
 # Record user voice
 st.markdown("#### 🎙️ Record Your Question")
-audio_bytes = audio_recorder(text="Click to record", recording_color="#e8b62c", neutral_color="#6aa36f")
+audio_bytes = audiorecorder('Record your query', "click to Record')
 
 if audio_bytes:
     # Save user audio
