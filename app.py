@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import openai
 import streamlit as st
+from pathlib import Path
 from streamlit_mic_recorder import speech_to_text
 
 from pineconedb import manage_pinecone_store
@@ -9,75 +8,76 @@ from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 
 # ——— Page config ———
-st.set_page_config(page_title="Musk ChatBot | Ask Elon-Level Questions")
-st.title("Ask Anything About Musk")
+st.set_page_config(page_title="Musk ChatBot (Voice Only)")
 
 # ——— Secrets & clients ———
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-GOOGLE_API_KEY = st.secrets["google_api_key"]
-
+GOOGLE_API_KEY   = st.secrets["google_api_key"]
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
-# TTS settings
-TTS_MODEL = "gpt-4o-mini-tts"
-TTS_VOICE = "echo"
-SPEECH_FILE = Path(__file__).parent / "speech.mp3"
-
-# ——— Build the chain ———
-llm = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
+# ——— LLM & Pinecone setup ———
+llm       = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
 retriever = manage_pinecone_store()
-chain = create_expert_chain(llm, retriever)
+chain     = create_expert_chain(llm, retriever)
 
-# ——— Chat history ———
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# ——— Session‐state for audio history ———
+if "bot_audio_files" not in st.session_state:
+    st.session_state.bot_audio_files = []
+if "user_audio_files" not in st.session_state:
+    st.session_state.user_audio_files = []
+if "turn" not in st.session_state:
+    st.session_state.turn = 0
 
-# ——— Inputs ———
-query = st.text_input("Type your question or use the mic below:", key="query")
-send_button = st.button("Send")
+# ——— UI controls ———
+st.title("🎙️ Musk ChatBot (Voice Only)")
+st.write("Speak below and hear Elon-level answers back!")
 
-voice_recording = speech_to_text(
+# 1) Get voice → text (and eventually raw audio)
+voice_text = speech_to_text(
     language="en",
     just_once=True,
     use_container_width=True,
     key="STT"
 )
-if voice_recording:
-    query = voice_recording
-    st.markdown(f"🎤 **You said:** {query}")
-    is_voice = True
-else:
-    is_voice = False
 
-# ——— Main logic ———
-if (send_button or is_voice) and query:
-    with st.spinner("Thinking..."):
-        # invoke the RunnableSequence synchronously :contentReference[oaicite:0]{index=0}
-        result = chain.invoke({"question": query})
-        # unpack if it returned a dict
-        if isinstance(result, dict):
-            ai_text = result.get("text") or result.get("answer") or list(result.values())[-1]
+# TODO: if your recorder can return the raw audio bytes/path, capture it here:
+# user_audio = <raw_audio_bytes_or_path>
+# st.session_state.user_audio_files.append(user_audio)
+
+if voice_text:
+    st.markdown(f"**You said:** _{voice_text}_")  # optional debug
+    st.session_state.turn += 1
+    turn = st.session_state.turn
+
+    # ——— Generate AI response text ———
+    with st.spinner("Thinking…"):
+        result = chain.stream({"question": voice_text})
+        # if it yields chunks, join them:
+        if hasattr(result, "__iter__") and not isinstance(result, str):
+            ai_text = "".join(result)
         else:
             ai_text = str(result)
 
-    # for text inputs: show chat bubbles
-    if not is_voice:
-        st.session_state.messages.append(("user", query))
-        st.session_state.messages.append(("ai", ai_text))
+    # ——— Generate TTS and save to unique file ———
+    out_path = Path(__file__).parent / f"bot_response_{turn}.mp3"
+    with client.audio.speech.with_streaming_response.create(
+        model="gpt-4o-mini-tts",
+        voice="echo",
+        input=ai_text,
+        instructions="Speak in a confident, uplifting tone."
+    ) as resp:
+        resp.stream_to_file(out_path)
 
-    # for voice inputs: generate & play TTS only
-    if is_voice:
-        with client.audio.speech.with_streaming_response.create(
-            model=TTS_MODEL,
-            voice=TTS_VOICE,
-            input=ai_text,
-            instructions="Speak in a confident, uplifting tone."
-        ) as resp:
-            resp.stream_to_file(SPEECH_FILE)
-        st.audio(str(SPEECH_FILE), format="audio/mp3")
+    # ——— Push to history ———
+    st.session_state.bot_audio_files.append(str(out_path))
 
-# ——— Render text chat history ———
-for role, msg in st.session_state.messages:
-    st.chat_message(role).write(msg)
+# ——— Finally: render the _voice_ history ———
+st.markdown("### Conversation so far (voice playback)")
+
+for idx, bot_file in enumerate(st.session_state.bot_audio_files, start=1):
+    st.markdown(f"**Turn {idx}:**")
+    # (If you captured user audio, you could do st.audio(user_file) here first)
+    # st.audio(st.session_state.user_audio_files[idx-1], format="audio/wav")
+    st.audio(bot_file, format="audio/mp3")
 
 
