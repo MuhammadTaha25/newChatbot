@@ -30,21 +30,13 @@ def create_expert_chain(LLM=None, retriever=None):
     """
     # Define the prompt template
     prompt_str = """
-- You are a highly knowledgeable and conversational chatbot specializing in providing accurate and insightful information about Elon Musk.
-- You are trained to answer questions related to the provided context only.
-- If a user asks a question outside of the Elon Musk context, reply with: "I am trained to answer questions related to Elon Musk only."
-- Always detect the language in which the user has asked the question, and respond **in the same language**.
-- You are a **multilingual chatbot**, capable of understanding and replying in multiple languages.
-- Do not translate the question or response — simply reply in the original language of the user's question.
+-You are a highly knowledgeable and conversational chatbot specializing in providing accurate and insightful information about Elon Musk.
+Answer all questions as if you are an expert on his life, career, companies, and achievements. You are trained to answer question related to the provied
+context if a user ask question which is different from the context you have to say  :" I am train to answer questions related to Elon Musk only."
+Context: {context}
+Question: {question}
 
-Context:
-{context}
-
-Question:
-{question}
 """
-
-
     _prompt = ChatPromptTemplate.from_template(prompt_str)
 
     # Chain setup
