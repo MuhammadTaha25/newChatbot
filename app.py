@@ -55,8 +55,15 @@ else:
 # ——— Main handler ———
 if (send_button or is_voice) and query:
     with st.spinner("Processing... Please wait!"):
-        # Use chain.run to get full text response
-        ai_text = chain.run({"question": query})
+        # instead of chain.run(), call the chain directly
+        result = chain({"question": query})
+        # if chain returns a dict, extract the main text
+        if isinstance(result, dict):
+            # common keys are "text", "answer", or last value
+            ai_text = result.get("text") or result.get("answer") or list(result.values())[-1]
+        else:
+            # if it's already a string
+            ai_text = str(result)
 
     # Store user & AI messages for text-chat history
     if not is_voice:
@@ -77,4 +84,5 @@ if (send_button or is_voice) and query:
 # ——— Render chat history (text only) ———
 for role, msg in st.session_state.messages:
     st.chat_message(role).write(msg)
+
 
