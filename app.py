@@ -99,7 +99,7 @@ if st.session_state.conversation:
         if message["role"] == "bot":
             # Left column for bot responses
             with st.container():
-                col1, col2 = st.columns([1, 4])
+                col1, col2 = st.columns([2, 2])
                 with col1:
                     st.markdown("**Elon Bot:**")
                     st.audio(message["audio"], format="audio/mp3")
@@ -110,7 +110,7 @@ if st.session_state.conversation:
         else:
             # Right column for user questions
             with st.container():
-                col1, col2 = st.columns([4, 1])
+                col1, col2 = st.columns([3, 3])
                 with col2:
                     st.markdown("**You:**")
                     st.audio(message["audio"], format="audio/wav")
