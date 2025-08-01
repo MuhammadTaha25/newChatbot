@@ -1,78 +1,92 @@
-import os
-from pathlib import Path
-
+# app.py
 import openai
 import streamlit as st
-from streamlit_audiorecorder import audiorecorder  # pip install streamlit-audiorecorder
+from pathlib import Path
+
+# Install: pip install streamlit-audiorecorder
+from streamlit_audiorecorder import audiorecorder
 
 from pineconedb import manage_pinecone_store
 from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 
-# ——— Config & secrets ———
-st.set_page_config(page_title="Musk ChatBot (Voice Chat UI)")
+# ——— Page config ———
+st.set_page_config(page_title="Musk ChatBot (Voice-Only with History)")
+
+# ——— Secrets & clients ———
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 GOOGLE_API_KEY   = st.secrets["google_api_key"]
-openai.api_key   = OPENAI_API_KEY
+openai_client    = openai.OpenAI(api_key=OPENAI_API_KEY)
 
-# ——— Setup LLM chain ———
-llm = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
+# ——— LLM & Pinecone setup ———
+llm       = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
 retriever = manage_pinecone_store()
-chain = create_expert_chain(llm, retriever)
+chain     = create_expert_chain(llm, retriever)
 
-# ——— Session‐state for storing audio files ———
-if "user_audio" not in st.session_state:
-    st.session_state.user_audio = []
-if "bot_audio" not in st.session_state:
-    st.session_state.bot_audio = []
+# ——— Session-state for history ———
+if "history" not in st.session_state:
+    # each entry: dict with keys user_audio, bot_audio
+    st.session_state.history = []
 if "turn" not in st.session_state:
     st.session_state.turn = 0
 
-st.title("🎙️ Musk ChatBot (Voice Chat)")
+st.title("🎙️ Musk ChatBot")
+st.write("Record your question below, then listen to Elon-level answers!")
 
-# ——— 1) Record user voice ———
-audio_bytes = audiorecorder("Speak now", "Recording...")  
-if audio_bytes:
-    turn = st.session_state.turn + 1
-    tmp_dir = Path(__file__).parent / "audio_history"
-    tmp_dir.mkdir(exist_ok=True)
-    
-    # save user audio
-    user_path = tmp_dir / f"user_{turn}.wav"
+# ——— 1) Record user audio ———
+user_bytes = audiorecorder("Click to record", "Recording...")
+
+if user_bytes:
+    st.session_state.turn += 1
+    turn = st.session_state.turn
+
+    # 2) Save raw user audio to disk
+    user_path = Path(f"turn_{turn}_user.wav")
     with open(user_path, "wb") as f:
-        f.write(audio_bytes)
-    st.session_state.user_audio.append(str(user_path))
+        f.write(user_bytes)
 
-    # transcribe with Whisper
-    transcript = openai.Audio.transcribe("whisper-1", user_path)
-    question = transcript["text"]
-    st.markdown(f"**You:** _{question}_")
-    
-    # call chain
+    # 3) Transcribe via OpenAI Whisper
+    with open(user_path, "rb") as audio_file:
+        transcript_resp = openai_client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
+    user_text = transcript_resp["text"]
+    st.markdown(f"**You said:** *{user_text}*")
+
+    # 4) Ask your chain
     with st.spinner("Thinking…"):
-        # collect streamed chunks if needed
-        out = chain.stream({"question": question})
-        if hasattr(out, "__iter__") and not isinstance(out, str):
-            answer = "".join(out)
+        # handle stream or static return
+        result = chain.stream({"question": user_text})
+        if hasattr(result, "__iter__") and not isinstance(result, str):
+            ai_text = "".join(result)
         else:
-            answer = str(out)
-    
-    # generate TTS
-    bot_path = tmp_dir / f"bot_{turn}.mp3"
-    with openai.OpenAI().audio.speech.with_streaming_response.create(
-        model="tts-1-hd",
+            ai_text = str(result)
+
+    # 5) Generate TTS for bot
+    bot_path = Path(f"turn_{turn}_bot.mp3")
+    with openai_client.audio.speech.with_streaming_response.create(
+        model="tts-1",
         voice="echo",
-        input=answer,
+        input=ai_text,
         # instructions="Speak in a confident, uplifting tone."
     ) as resp:
         resp.stream_to_file(bot_path)
-    st.session_state.bot_audio.append(str(bot_path))
-    
-    # increment turn
-    st.session_state.turn = turn
 
-# ——— 2) Render chat history as alternating audio players ———
-for i in range(st.session_state.turn):
-    st.markdown(f"**Turn {i+1}:**")
-    st.audio(st.session_state.user_audio[i], format="audio/wav")
-    st.audio(st.session_state.bot_audio[i],  format="audio/mp3")
+    # 6) Append to history
+    st.session_state.history.append({
+        "user_audio": str(user_path),
+        "bot_audio": str(bot_path)
+    })
+
+# ——— Render history side-by-side ———
+st.markdown("## Conversation History")
+for idx, turn_data in enumerate(st.session_state.history, start=1):
+    st.markdown(f"**Turn {idx}**")
+    left, right = st.columns(2)
+    with left:
+        st.markdown("**Elon says:**")
+        st.audio(turn_data["bot_audio"], format="audio/mp3")
+    with right:
+        st.markdown("**You said:**")
+        st.audio(turn_data["user_audio"], format="audio/wav")
