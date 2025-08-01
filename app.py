@@ -30,7 +30,7 @@ st.title("🎤 Musk ChatBot with Voice Chat")
 
 # Record user voice
 st.markdown("#### 🎙️ Record Your Question")
-audio_bytes = audiorecorder('Record your query', "click to Record')
+audio_bytes = audiorecorder('Record your query', "click to Record")
 
 if audio_bytes:
     # Save user audio
