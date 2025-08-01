@@ -29,7 +29,7 @@ def create_expert_chain(LLM=None, retriever=None):
         object: A configured chain for answering questions about Elon Musk.
     """
     # Define the prompt template
-prompt_str = """
+    prompt_str = """
 - You are a highly knowledgeable and conversational chatbot specializing in providing accurate and insightful information about Elon Musk.
 - Answer all questions as if you are an expert on his life, career, companies, and achievements.
 - You are trained to answer questions related to the provided context only.
