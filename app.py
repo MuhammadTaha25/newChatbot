@@ -54,43 +54,55 @@ if audio_bytes:
         audio_file = io.BytesIO(audio_bytes['bytes'])
         audio_file.name = "recording.wav"
         
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_file,
-            language="en"
-        ).text
+        try:
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file,
+                language="en"
+            ).text
+        except Exception as e:
+            st.error(f"Error transcribing audio: {e}")
+            transcript = ""
         
-        if transcript:
-            # Add to conversation history
-            st.session_state.conversation.append({
-                "role": "user",
-                "audio": str(user_audio_path),
-                "text": transcript
-            })
-            
-            # Generate AI response
-            with st.spinner("Generating Your Reponse"):
-                result = chain.stream({"question": transcript})
-                ai_text = "".join(result) if hasattr(result, "__iter__") else str(result)
-            
-            # Generate TTS
-            bot_audio_path = Path(__file__).parent / f"bot_response_{st.session_state.turn}.mp3"
-            with client.audio.speech.with_streaming_response.create(
-                model="tts-1",
-                voice="echo",
-                input=ai_text,
-            ) as resp:
-                resp.stream_to_file(bot_audio_path)
-            
-            # Add bot response to history
-            st.session_state.conversation.append({
-                "role": "bot",
-                "audio": str(bot_audio_path),
-                "text": ai_text
-            })
-            
-            st.session_state.turn += 1
-            st.rerun()
+        # Check for empty/null transcript
+        if not transcript or transcript.strip() == "":
+            st.warning("🔇 Couldn't detect speech. Please try recording again.")
+            # Clean up empty audio file
+            if os.path.exists(user_audio_path):
+                os.remove(user_audio_path)
+            # Skip further processing
+            st.stop()
+        
+        # Add to conversation history
+        st.session_state.conversation.append({
+            "role": "user",
+            "audio": str(user_audio_path),
+            "text": transcript
+        })
+        
+        # Generate AI response
+        with st.spinner("Generating Your Response..."):
+            result = chain.stream({"question": transcript})
+            ai_text = "".join(result) if hasattr(result, "__iter__") else str(result)
+        
+        # Generate TTS
+        bot_audio_path = Path(__file__).parent / f"bot_response_{st.session_state.turn}.mp3"
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1",
+            voice="echo",
+            input=ai_text,
+        ) as resp:
+            resp.stream_to_file(bot_audio_path)
+        
+        # Add bot response to history
+        st.session_state.conversation.append({
+            "role": "bot",
+            "audio": str(bot_audio_path),
+            "text": ai_text
+        })
+        
+        st.session_state.turn += 1
+        st.rerun()
 
 # ——— Display conversation history ———
 st.markdown("## Conversation History")
