@@ -76,7 +76,7 @@ if audio_bytes:
             # Generate TTS
             bot_audio_path = Path(__file__).parent / f"bot_response_{st.session_state.turn}.mp3"
             with client.audio.speech.with_streaming_response.create(
-                model="tts-1",
+                model="gpt-4o-mini-tts",
                 voice="echo",
                 input=ai_text,
             ) as resp:
