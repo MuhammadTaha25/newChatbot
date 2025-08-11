@@ -16,7 +16,7 @@ st.set_page_config(page_title="Musk ChatBot (Voice Only)", layout="wide")
 # ——— Secrets & clients ———
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 GOOGLE_API_KEY = st.secrets["google_api_key"]
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI()
 
 # ——— LLM & Pinecone setup ———
 llm = initialize_LLM(OPENAI_API_KEY, GOOGLE_API_KEY)
