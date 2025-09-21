@@ -31,6 +31,16 @@ if "turn" not in st.session_state:
 
 # ——— UI controls ———
 st.title("🎙️ Talk2Musk AI")
+# --- Custom fix for tab title ---
+st.markdown(
+    """
+    <script>
+    document.title = "Talk2Musk AI";
+    </script>
+    """,
+    unsafe_allow_html=True
+)
+
 st.write("Record your question and hear Elon-level voice responses!")
 
 # Create recording button
