@@ -11,7 +11,7 @@ from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 
 # ——— Page config ———
-st.set_page_config(page_title="Talk2Musk AI", layout="wide")
+st.set_page_config(page_title="Talk2Musk AI | Voice of Elon", layout="wide")
 
 # ——— Secrets & clients ———
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
