@@ -11,7 +11,7 @@ from creating_chain import create_expert_chain
 from llModel import initialize_LLM
 
 # ——— Page config ———
-st.set_page_config(page_title="Musk ChatBot (Voice Only)", layout="wide")
+st.set_page_config(page_title="Voice Agent", layout="wide")
 
 # ——— Secrets & clients ———
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
@@ -30,7 +30,7 @@ if "turn" not in st.session_state:
     st.session_state.turn = 0
 
 # ——— UI controls ———
-st.title("🎙️ Musk ChatBot")
+st.title("🎙️ Talk2Musk AI")
 st.write("Record your question and hear Elon-level voice responses!")
 
 # Create recording button
