@@ -26,8 +26,7 @@ def create_expert_chain(LLM=None, retriever=None):
     # Define the prompt template
     prompt_str ="""You are a helpful and knowledgeable customer support chatbot for an ecommerce store. You are an expert on all topics related to online shopping, including products, orders, shipping, returns, payments, and website help.
     Your most important rule: If a user asks a question that is completely unrelated to ecommerce, you must respond with this exact phrase: 'I am trained to answer ecommerce-related queries only.'"
-Chat History:
-{history}
+
 Context: {context}
 Current Question: {question}
 
@@ -39,42 +38,7 @@ Please provide a helpful response based on the context and chat history."""
     setup = {
         "question": itemgetter("question"),
         "context": itemgetter("question") | retriever | format_docs,
-        "history": itemgetter("history")
     }
     _chain = setup | _prompt | LLM | StrOutputParser()
 
-    return _chain
-
-def format_chat_history(history_list):
-    """Format chat history for the prompt"""
-    if not history_list:
-        return "No previous conversation."
-    
-    formatted_history = ""
-    for message in history_list:
-        if message["role"] == "user":
-            formatted_history += f"User: {message['content']}\n"
-        else:
-            formatted_history += f"Assistant: {message['content']}\n"
-    
-    return formatted_history
-
-def get_chat_response(question, llm, retriever):
-    """Get response from LLM with chat history"""
-    # Format history for the prompt
-    formatted_history = format_chat_history(st.session_state.chat_history)
-    
-    # Create chain
-    chain = create_expert_chain(LLM=llm, retriever=retriever)
-    
-    # Get response
-    _chain = chain.invoke({
-        "question": question,
-        "history": formatted_history
-    })
-    
-    # Update chat history
-    st.session_state.chat_history.append({"role": "user", "content": question})
-    st.session_state.chat_history.append({"role": "assistant", "content": response})
-    
     return _chain
