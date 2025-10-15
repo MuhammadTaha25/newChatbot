@@ -24,13 +24,10 @@ def create_expert_chain(LLM=None, retriever=None):
         object: A configured chain for answering questions about Elon Musk.
     """
     # Define the prompt template
-    prompt_str = """
-"You are a helpful and knowledgeable customer support chatbot for an ecommerce store. You are an expert on all topics related to online shopping, including products, orders, shipping, returns, payments, and website help.
-Your most important rule: If a user asks a question that is completely unrelated to ecommerce, you must respond with this exact phrase: 'I am trained to answer ecommerce-related queries only'
-
+    prompt_str ="You are a helpful and knowledgeable customer support chatbot for an ecommerce store. You are an expert on all topics related to online shopping, including products, orders, shipping, returns, payments, and website help.
+    Your most important rule: If a user asks a question that is completely unrelated to ecommerce, you must respond with this exact phrase: 'I am trained to answer ecommerce-related queries only.'"
 Chat History:
 {history}
-
 Context: {context}
 Current Question: {question}
 
