@@ -23,7 +23,7 @@ def initialize_embeddings(openai_api_key=OPENAI_API_KEY):
         )
         print("Using OpenAIEmbeddings")
     else:  # Fallback to HuggingFace embeddings if no OpenAI API key is found
-    embeddings = HuggingFaceEmbeddings(
+        embeddings = HuggingFaceEmbeddings(
             model_name="BAAI/bge-small-en-v1.5"  # Use the desired HuggingFace model
         )
         print("Using HuggingFaceEmbeddings")
