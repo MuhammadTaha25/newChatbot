@@ -1,4 +1,4 @@
-from langchain.prompts.chat import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 import streamlit as st
 from langchain.schema import StrOutputParser
 from operator import itemgetter
