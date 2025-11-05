@@ -1,6 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 import streamlit as st
-from langchain.schema import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser
 from operator import itemgetter
 from openai import OpenAI
 from langsmith import traceable
